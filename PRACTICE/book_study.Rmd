@@ -1,0 +1,152 @@
+---
+title: "Prática de R com o Livro *R for Data Science*"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# Seção 01 - Visualização Básica com package 'palmerpenguins'
+
+```{r}
+library(tidyverse) # carregar biblioteca contendo package ggplot2
+library(palmerpenguins) # carregar pacote com dataset 
+library(ggthemes) # temas gráficos com paleta adaptada para daltônicos
+```
+
+Posso usar a função `print(penguins, n = ...)` para exibir 'n' linhas do conjunto de dados 'penguins'.
+A função `view(penguins)` também exibe as variáveis do conjunto de dados, em outra visualização.
+
+A função `ggplot(data = penguins)` cria apenas um vínculo entre o conjunto de dados e a visualização.
+O gráfico é construído depois, adicionando outros elementos.
+
+```{r}
+ggplot(data = penguins)
+```
+
+Depois são definidos os eixos, usando o argumento `mapping = aes(x,y)`
+
+```{r,warning=FALSE}
+ggplot(data = penguins,
+       mapping = aes(
+         x = flipper_length_mm, y = body_mass_g)
+       )
+```
+
+Por fim, o elemento geométrico que exibe os valores, com a função `geom_point()`.
+É preciso "unir" essa função à anterior com um símbolo '+'.
+
+```{r,warning=FALSE}
+ggplot(data = penguins,
+       mapping = 
+         aes(x = flipper_length_mm, y = body_mass_g)
+       ) +
+  geom_point()
+         
+```
+
+Existem outros elementos gráficos para `geom` como `geom_line()`, `geom_boxplot()`...
+
+É possível variar as cores dos pontos do gráfico conforme a espécie dos pinguins, usando o argumento `aes(color = )`
+
+```{r,warning=FALSE}
+ggplot(data = penguins,
+       mapping = aes(
+         x = flipper_length_mm, y = body_mass_g, colour = species
+       )) +
+  geom_point()
+```
+
+A função `geom()` também pode adicionar uma linha de tendência ao gráfico, com `geom_smooth(method = 'lm')`.
+O argumento 'lm' define que o ajuste será linear.
+
+```{r,warning=FALSE}
+ggplot(data = penguins,
+       mapping = aes(
+         x = flipper_length_mm, y = body_mass_g, colour = species
+       )) +
+  geom_point() +
+  geom_smooth(method = 'lm')
+
+```
+
+Mas dessa forma, são criadas linhas separadas para cada espécie, porque a categoria foi definida no nível global do `ggplot()`.
+Para criar apenas uma linha, a categoria deve ser definida como argumento somente dos pontos, usando `geom_point(mapping = aes(colour = species))`
+
+```{r,warning=FALSE}
+ggplot(data = penguins,
+       mapping = aes(
+         x = flipper_length_mm, y = body_mass_g)
+       ) +
+  geom_point(
+    mapping = aes(
+      colour = species)
+  ) +
+  geom_smooth(method = 'lm')
+
+```
+
+Agora, modifica-se o formato dos pontos para cada espécie, com o argumento `shape`.
+Em seguida, os títulos, com a função `labs()`.
+
+```{r,warning=FALSE}
+ggplot(data = penguins,
+       mapping = aes(
+         x = flipper_length_mm, y = body_mass_g)
+       ) +
+  geom_point(
+    mapping = aes(
+      colour = species,
+      shape = species)
+  ) +
+  geom_smooth(method = 'lm') +
+  labs(
+    title = 'Comprimento da Nadadeira e Peso Corporal',
+    subtitle = 'Pinguins das Espécies Adelie, Chinstrap e Gentoo',
+    x = 'Nadadeira (mm)', y = 'Peso (g)',
+    colour = 'Especie', shape = 'Especie'
+  ) +
+  scale_color_colorblind()
+
+```
+
+Exercícios sugeridos:
+
+-   Criar scatterplot de x = bill_length_mm, y = bill_depth_mm:
+
+```{r,warning=FALSE}
+ggplot(data = penguins,
+       mapping = 
+         aes(
+           x = bill_length_mm, y = bill_depth_mm
+         )) +
+  geom_point()
+```
+
+-   Praticando com outros parâmetros: Observar que é possível omitir os nomes dos parâmetros **data** e **mapping**, inserindo apenas seus valores na posição correta.
+
+```{r, warning=FALSE}
+ggplot(penguins, aes(
+  x = flipper_length_mm, y = body_mass_g
+)) +
+  geom_point(aes(colour = bill_depth_mm)) +
+  geom_smooth() + 
+  theme(
+    panel.background = element_rect(fill = 'white'),
+    legend.background = element_rect(colour = 'black')
+  ) +
+  labs(
+    colour = 'Bill',
+    x = 'Nadadeira (mm)', y = 'Peso (g)'
+  )
+```
+
+# Seção 02 - Visualização de Distribuições
+
+## Variáveis Categóricas
+
+Exibir a contagem de ocorrências de cada categoria usando gráfico de barras verticais:
+
+```{r}
+ggplot(penguins, aes(x = species)) + #define o conjunto de dados 'penguins' e o eixo das categorias conforme a varíavel 'species'
+  geom_bar()
+```
