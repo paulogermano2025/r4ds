@@ -1,0 +1,16 @@
+---
+title: "book_study"
+output: html_document
+---
+
+# Exercícios do Livro R4DS
+
+## Seção 01 - Visualização com package 'palmerpenguins'
+
+```{r}
+library(tidyverse) # carregar biblioteca contendo package ggplot2
+library(palmerpenguins) # carregar pacote com dataset 
+library(ggthemes) # temas gráficos com paleta adaptada para daltônicos
+```
+
+Posso usar a função `print(penguins, n = ...)` para exibir 'n' linhas do conjunto de dados 'penguins'.
